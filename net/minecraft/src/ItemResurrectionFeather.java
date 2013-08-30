@@ -64,13 +64,22 @@ public class ItemResurrectionFeather extends Item {
 
 	public boolean whiteListCheck(EntityLivingBase entity) {
 		boolean flag = false;
+		boolean simpleNameCheck = true;
 		for (int i = 0 ; i < mod_ResurrectionFeather.whiteList.size() && !flag ; i++) {
 			String s = (String)mod_ResurrectionFeather.whiteList.get(i);
+			if (s.startsWith("[")
+					&& s.endsWith("]")) {
+				simpleNameCheck = false;
+				s = s.substring(1, s.length() - 1);
+			} else {
+				simpleNameCheck = true;
+			}
 			try {
 				Class c = Class.forName(getClassName(s));
 				if (c.isInstance(entity)) flag = true;
 			} catch (ClassNotFoundException e) {
-				if (entity.getClass().toString().indexOf(s) != -1) flag = true;
+				if (simpleNameCheck
+						&& entity.getClass().toString().indexOf(s) != -1) flag = true;
 			}
 		}
 		return flag;
@@ -78,13 +87,22 @@ public class ItemResurrectionFeather extends Item {
 
 	public boolean ngListCheck(EntityLivingBase entity) {
 		boolean flag = false;
+		boolean simpleNameCheck = true;
 		for (int i = 0 ; i < mod_ResurrectionFeather.ngList.size() && !flag ; i++) {
 			String s = (String)mod_ResurrectionFeather.ngList.get(i);
+			if (s.startsWith("[")
+					&& s.endsWith("]")) {
+				simpleNameCheck = false;
+				s = s.substring(1, s.length() - 1);
+			} else {
+				simpleNameCheck = true;
+			}
 			try {
 				Class c = Class.forName(getClassName(s));
 				if (c.isInstance(entity)) flag = true;
 			} catch (ClassNotFoundException e) {
-				if (entity.getClass().toString().indexOf(s) != -1) flag = true;
+				if (simpleNameCheck
+						&& entity.getClass().toString().indexOf(s) != -1) flag = true;
 			}
 		}
 		return flag;

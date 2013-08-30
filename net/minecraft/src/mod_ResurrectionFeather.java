@@ -50,7 +50,7 @@ public class mod_ResurrectionFeather extends BaseMod {
 	}
 
 	public String getVersion() {
-		return "1.6.2-4a";
+		return "1.6.2-4c";
 	}
 
 	public void load() {
@@ -95,9 +95,9 @@ public class mod_ResurrectionFeather extends BaseMod {
 			if (!whiteListfile.exists()) {
 				// whiteListファイルが無い = 新規作成
 				String s[] = {
-						"EntityCreature", "ok", "ozelot", "wolf", "cow",
-						"chicken", "pig", "sheep", "golem", "squid",
-						"villager"
+						"net.minecraft.entity.EntityCreature", "EntityCreature", "[om]", "Ozelot", "Wolf",
+						"Cow", "Chicken", "Pig", "Sheep", "Golem",
+						"Squid", "Villager"
 				};
 				writerList(s, whiteListfile, whiteList);
 			} else {
@@ -122,7 +122,7 @@ public class mod_ResurrectionFeather extends BaseMod {
 			if (!ngListfile.exists()) {
 				// NGListファイルが無い = 新規作成
 				String s[] = {
-						"EntityMob", "tj"
+						"net.minecraft.entity.monster.EntityMob", "EntityMob", "[tl]"
 				};
 				writerList(s, ngListfile, ngList);
 			} else {

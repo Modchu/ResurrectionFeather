@@ -65,8 +65,8 @@ public class ItemResurrectionFeather extends Item {
 	public boolean whiteListCheck(EntityLivingBase entity) {
 		boolean flag = false;
 		boolean simpleNameCheck = true;
-		for (int i = 0 ; i < mod_ResurrectionFeather.whiteList.size() && !flag ; i++) {
-			String s = (String)mod_ResurrectionFeather.whiteList.get(i);
+		for (int i = 0 ; i < EntityCreature.whiteList.size() && !flag ; i++) {
+			String s = (String) EntityCreature.whiteList.get(i);
 			if (s.startsWith("[")
 					&& s.endsWith("]")) {
 				simpleNameCheck = false;
@@ -88,8 +88,8 @@ public class ItemResurrectionFeather extends Item {
 	public boolean ngListCheck(EntityLivingBase entity) {
 		boolean flag = false;
 		boolean simpleNameCheck = true;
-		for (int i = 0 ; i < mod_ResurrectionFeather.ngList.size() && !flag ; i++) {
-			String s = (String)mod_ResurrectionFeather.ngList.get(i);
+		for (int i = 0 ; i < EntityCreature.ngList.size() && !flag ; i++) {
+			String s = (String) EntityCreature.ngList.get(i);
 			if (s.startsWith("[")
 					&& s.endsWith("]")) {
 				simpleNameCheck = false;

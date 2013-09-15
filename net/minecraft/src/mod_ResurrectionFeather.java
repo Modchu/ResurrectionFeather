@@ -14,9 +14,9 @@ public class mod_ResurrectionFeather extends BaseMod {
 	public static int onDeathTimeDrop = 20;
 	public static int onDeathTimeDespawn = 300;
 	public static boolean useOriginalIcon = true;
+	public static boolean DebugMessage = false;
 
 	public static Item resurrectionFeather;
-	private static boolean DebugMessage = true;
 	public static mod_ResurrectionFeather mod_resurrectionFeather;
 	private static final File cfgdir = new File(Minecraft.getMinecraft().mcDataDir, "/config/");
 	private static File whiteListfile = new File(cfgdir, ("ResurrectionFeather_whiteList.cfg"));
@@ -50,7 +50,7 @@ public class mod_ResurrectionFeather extends BaseMod {
 	}
 
 	public String getVersion() {
-		return "1.6.2-4c";
+		return "1.6.2-5";
 	}
 
 	public void load() {
@@ -65,6 +65,14 @@ public class mod_ResurrectionFeather extends BaseMod {
 				new Object[] { " Y ", "YXY", " Y ", Character.valueOf('X'),
 						Item.feather, Character.valueOf('Y'), Item.ingotGold });
 		loadList();
+	}
+
+	public void modsLoaded()
+	{
+		EntityCreature.whiteList = whiteList;
+		EntityCreature.ngList = ngList;
+		EntityCreature.onDeathTimeDrop = onDeathTimeDrop;
+		EntityCreature.onDeathTimeDespawn = onDeathTimeDespawn;
 	}
 
 	public static void writerList(String[] s, File file, List<String> list) {
@@ -156,7 +164,8 @@ public class mod_ResurrectionFeather extends BaseMod {
 						"resurrectionFeatherID=17650",
 						"onDeathTimeDrop=20",
 						"onDeathTimeDespawn=300",
-						"useOriginalIcon=true"
+						"useOriginalIcon=true",
+						"DebugMessage=false"
 				};
 				ResurrectionFeatherConfig.writerConfig(mainCfgfile, s);
 			} else {
@@ -165,18 +174,21 @@ public class mod_ResurrectionFeather extends BaseMod {
 				onDeathTimeDrop = Integer.valueOf((ResurrectionFeatherConfig.loadConfig(mainCfgfile, "onDeathTimeDrop", onDeathTimeDrop)).toString());
 				onDeathTimeDespawn = Integer.valueOf((ResurrectionFeatherConfig.loadConfig(mainCfgfile, "onDeathTimeDespawn", onDeathTimeDespawn)).toString());
 				useOriginalIcon = Boolean.valueOf((ResurrectionFeatherConfig.loadConfig(mainCfgfile, "useOriginalIcon", useOriginalIcon)).toString());
+				DebugMessage = Boolean.valueOf((ResurrectionFeatherConfig.loadConfig(mainCfgfile, "DebugMessage", DebugMessage)).toString());
 				cfgMaxMinCheck();
 				String k[] = {
 						"resurrectionFeatherID",
 						"onDeathTimeDrop",
 						"onDeathTimeDespawn",
-						"useOriginalIcon"
+						"useOriginalIcon",
+						"DebugMessage"
 				};
 				String k1[] = {
 						""+resurrectionFeatherID,
 						""+onDeathTimeDrop,
 						""+onDeathTimeDespawn,
-						""+useOriginalIcon
+						""+useOriginalIcon,
+						""+DebugMessage
 				};
 				ResurrectionFeatherConfig.writerSupplementConfig(mainCfgfile, k, k1);
 			}

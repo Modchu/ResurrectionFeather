@@ -14,7 +14,7 @@ public class ResurrectionFeatherEntityCreature {
 	public static List entityWhiteListData = new ArrayList();
 	public static List entityNgListData = new ArrayList();
 	public static HashMap<Object, Long> entitydeathTimeMap = new HashMap();
-	public static HashMap<Object, Long> entityResurrectionTimeMap = new HashMap();
+	//public static HashMap<Object, Long> entityResurrectionTimeMap = new HashMap();
 	public static List<String> whiteList = new ArrayList<String>();
 	public static List<String> ngList = new ArrayList<String>();
 	public static int onDeathTimeDespawn = 20;
@@ -26,6 +26,7 @@ public class ResurrectionFeatherEntityCreature {
 	private static Random rand = new Random();
 	public static Object tempItemstack;
 	public static boolean allResurrectionFlag = false;
+	private static boolean consumptionFlag = false;
 
 	public static void livingEventLivingUpdateEvent(Object event) {
 		//if (modc_ResurrectionFeather.debug) Modchu_Debug.mDebug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent 1");
@@ -34,41 +35,21 @@ public class ResurrectionFeatherEntityCreature {
 			//if (modc_ResurrectionFeather.debug) Modchu_Debug.Debug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent entityLiving == null !!");
 			return;
 		}
-		long systemTime = Modchu_AS.getLong(Modchu_AS.minecraftSystemTime);
-		//if (modc_ResurrectionFeather.debug) Modchu_Debug.mdDebug("allResurrectionTime = "+(tempAllResurrectionTime + modc_ResurrectionFeather.allResurrectionWaitTime - systemTime), 1);
 		if (Modchu_AS.getFloat(Modchu_AS.entityLivingBaseGetHealth, entityLiving) <= 0.0F) {
 			//if (modc_ResurrectionFeather.debug) Modchu_Debug.Debug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent call.");
 			onDeathUpdate(entityLiving, true);
 		} else {
 			//if (modc_ResurrectionFeather.debug) Modchu_Debug.Debug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent "+(Modchu_AS.getFloat(Modchu_AS.entityLivingBaseGetHealth, entityLiving)));
 		}
+		long systemTime = Modchu_AS.getLong(Modchu_AS.minecraftSystemTime);
+		if (modc_ResurrectionFeather.debug) Modchu_Debug.mdDebug("allResurrectionTime = "+(tempAllResurrectionTime + modc_ResurrectionFeather.allResurrectionWaitTime - systemTime), 1);
 		if (allResurrectionFlag
 				&& tempAllResurrectionTime + modc_ResurrectionFeather.allResurrectionWaitTime < systemTime) {
-			Object thePlayer = Modchu_AS.get(Modchu_AS.minecraftThePlayer);
-			boolean isRemote = Modchu_AS.getBoolean(Modchu_AS.worldIsRemote, thePlayer);
-			if (thePlayer != null) {
-				Object itemStack = Modchu_AS.get(Modchu_AS.entityPlayerInventoryGetStackInSlot, thePlayer, tempCurrentItem);
-				Modchu_Debug.mDebug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent 1 isRemote="+isRemote+" itemStack="+itemStack+" tempCurrentItem="+tempCurrentItem);
-				if (itemStack != null) {
-					Object o = Modchu_Main.getModchuItem(Modchu_AS.get(Modchu_AS.itemStackGetItem, tempItemstack));
-					Modchu_Debug.mDebug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent 2 isRemote="+isRemote+" o="+o);
-					if (o != null) {
-						int stackSize = itemStack != null ? Modchu_AS.getInt(Modchu_AS.itemStackStackSize, itemStack) : 1;
-						Modchu_Debug.mDebug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent 3 isRemote="+isRemote+" stackSize="+stackSize);
-						if (stackSize > 0) Modchu_AS.set(Modchu_AS.itemStackStackSize, itemStack, 0);
-						Modchu_AS.set(Modchu_AS.entityPlayerInventorySetInventorySlotContents, thePlayer, tempCurrentItem, null);
-						Modchu_Debug.mDebug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent 4 setInventorySlotContents isRemote="+isRemote+" tempCurrentItem="+tempCurrentItem);
-					}
-				}
-				allResurrectionFlag = false;
-			}
-			int stackSize = tempItemstack != null ? Modchu_AS.getInt(Modchu_AS.itemStackStackSize, tempItemstack) : 1;
-			Modchu_Debug.mDebug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent 3 isRemote="+isRemote+" stackSize="+stackSize);
-			if (tempItemstack != null
-					&& stackSize > 0) Modchu_AS.set(Modchu_AS.itemStackStackSize, tempItemstack, 0);
+			Modchu_Debug.mDebug1("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent allResurrectionFlag = false");
 			tempItemstack = null;
-			Modchu_Debug.mDebug1("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent end. ");
+			allResurrectionFlag = false;
 		}
+		//Modchu_Debug.mDebug1("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent end. ");
 	}
 
 	public static int onDeathUpdate(Object entityLivingBase, boolean isDead) {
@@ -86,22 +67,52 @@ public class ResurrectionFeatherEntityCreature {
 		if (listCheck(whiteList, entityWhiteListData, entityLivingBase)
 				&& !listCheck(ngList, entityNgListData, entityLivingBase)) {
 			long deathTime = entitydeathTimeMap.containsKey(entityLivingBase) ? entitydeathTimeMap.get(entityLivingBase) : 0;
-			long resurrectionTime = entityResurrectionTimeMap.containsKey(entityLivingBase) ? entityResurrectionTimeMap.get(entityLivingBase) : -1;
+			//long resurrectionTime = entityResurrectionTimeMap.containsKey(entityLivingBase) ? entityResurrectionTimeMap.get(entityLivingBase) : -1;
 			long systemTime = Modchu_AS.getLong(Modchu_AS.minecraftSystemTime);
-			boolean resurrectionFlag = resurrectionTime + 1000 > systemTime;
-			if (tempAllResurrectionTime + modc_ResurrectionFeather.allResurrectionWaitTime > systemTime) {
-				if (tempItemstack != null
-						&& !resurrectionFlag) {
-					resurrectionFlag = Modchu_AS.getBoolean(Modchu_AS.itemItemInteractionForEntity, Modchu_AS.get(Modchu_AS.itemStackGetItem, tempItemstack), tempItemstack, Modchu_AS.get(Modchu_AS.minecraftThePlayer), entityLivingBase);
-				}
+			//boolean resurrectionFlag = resurrectionTime + 1000 > systemTime;
+			boolean resurrectionFlag = false;
+			if (allResurrectionFlag
+					&& tempAllResurrectionTime + modc_ResurrectionFeather.allResurrectionWaitTime > systemTime) {
+				//if (!resurrectionFlag) {
+					boolean isRemote = Modchu_AS.getBoolean(Modchu_AS.worldIsRemote, entityLivingBase);
+					resurrectionFlag = resurrectionEntity(entityLivingBase);
+				//}
 			}
 			if (resurrectionFlag) {
 				tempResurrectionTime = systemTime;
-				entityResurrectionTimeMap.put(entityLivingBase, systemTime);
+				//entityResurrectionTimeMap.put(entityLivingBase, systemTime);
 				entitydeathTimeMap.put(entityLivingBase, (long) 0);
 				isDead = false;
+				//if (modc_ResurrectionFeather.debug) Modchu_Debug.Debug("ResurrectionFeatherEntityCreature onDeathUpdate IsCreativeMode="+Modchu_AS.getBoolean(Modchu_AS.entityPlayerCapabilitiesIsCreativeMode));
 				i = 2;
-			}
+				boolean isRemote = Modchu_AS.getBoolean(Modchu_AS.worldIsRemote, entityLivingBase);
+				if (!isRemote
+						&& consumptionFlag) {
+					Object thePlayer = Modchu_AS.getList(Modchu_AS.worldPlayerEntities, Modchu_AS.getObjectArray(Modchu_AS.minecraftServerGetServerWorldServers)[0]).get(0);
+					Object itemStack = Modchu_AS.get(Modchu_AS.entityPlayerInventoryGetStackInSlot, thePlayer, tempCurrentItem);
+					//Modchu_Debug.mDebug("ResurrectionFeatherEntityCreature onDeathUpdate 1 isRemote="+isRemote+" itemStack="+itemStack+" tempCurrentItem="+tempCurrentItem);
+					if (itemStack != null
+							&& tempItemstack != null
+							&& Modchu_AS.get(Modchu_AS.itemStackGetItem, itemStack).getClass() == Modchu_AS.get(Modchu_AS.itemStackGetItem, tempItemstack).getClass()) {
+						Object o = Modchu_Main.getModchuItem(Modchu_AS.get(Modchu_AS.itemStackGetItem, tempItemstack));
+						//Modchu_Debug.mDebug("ResurrectionFeatherEntityCreature onDeathUpdate 2 isRemote="+isRemote+" o="+o);
+						if (o != null) {
+							int stackSize = Modchu_AS.getInt(Modchu_AS.itemStackStackSize, itemStack);
+							//Modchu_Debug.mDebug("ResurrectionFeatherEntityCreature onDeathUpdate 3 isRemote="+isRemote+" stackSize="+stackSize);
+							--stackSize;
+							if (stackSize > 0) Modchu_AS.set(Modchu_AS.itemStackStackSize, itemStack, stackSize);
+							if (stackSize <= 0) Modchu_AS.set(Modchu_AS.entityPlayerInventorySetInventorySlotContents, thePlayer, tempCurrentItem, null);
+							//Modchu_Debug.mDebug("ResurrectionFeatherEntityCreature onDeathUpdate 4 setInventorySlotContents isRemote="+isRemote+" tempCurrentItem="+tempCurrentItem);
+						}
+					} else {
+						allResurrectionFlag = false;
+						isDead = true;
+						//if (modc_ResurrectionFeather.debug) Modchu_Debug.Debug("ResurrectionFeatherEntityCreature onDeathUpdate consumptionFlag else itemStack.getItem().getClass()="+Modchu_AS.get(Modchu_AS.itemStackGetItem, itemStack).getClass());
+						i = 0;
+					}
+					consumptionFlag = false;
+				}
+			 }
 			if (isDead) {
 				++deathTime;
 				//if (modc_ResurrectionFeather.debug) Modchu_Debug.mdDebug("onDeathUpdate() run. ("+deathTime+" / "+onDeathTimeDespawn+")");
@@ -235,8 +246,10 @@ public class ResurrectionFeatherEntityCreature {
 			tempItemstack = itemStack;
 			tempAllResurrectionTime = systemTime;
 			allResurrectionFlag = true;
-			tempCurrentItem = Modchu_AS.getInt(Modchu_AS.entityPlayerInventoryCurrentItem, entityPlayer);
-			//if (modc_ResurrectionFeather.debug) Modchu_Debug.mDebug("allResurrection tempCurrentItem="+tempCurrentItem);
+			boolean isRemote = Modchu_AS.getBoolean(Modchu_AS.worldIsRemote, entityPlayer);
+			if (isRemote) tempCurrentItem = Modchu_AS.getInt(Modchu_AS.entityPlayerInventoryCurrentItem, entityPlayer);
+			if (!Modchu_AS.getBoolean(Modchu_AS.entityPlayerCapabilitiesIsCreativeMode)) consumptionFlag = true;
+			if (modc_ResurrectionFeather.debug) Modchu_Debug.mDebug("allResurrection tempCurrentItem="+tempCurrentItem);
 			return true;
 		}
 		return false;

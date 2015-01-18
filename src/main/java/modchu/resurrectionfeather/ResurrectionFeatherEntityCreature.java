@@ -28,9 +28,8 @@ public class ResurrectionFeatherEntityCreature {
 	public static boolean allResurrectionFlag = false;
 	private static boolean consumptionFlag = false;
 
-	public static void livingEventLivingUpdateEvent(Object event) {
+	public static void livingEventLivingUpdateEvent(Object entityLiving) {
 		//if (modc_ResurrectionFeather.debug) Modchu_Debug.mDebug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent 1");
-		Object entityLiving = Modchu_Reflect.getFieldObject(event.getClass(), "entityLiving", event);
 		if (entityLiving != null) ;else {
 			//if (modc_ResurrectionFeather.debug) Modchu_Debug.Debug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent entityLiving == null !!");
 			return;
@@ -240,7 +239,9 @@ public class ResurrectionFeatherEntityCreature {
 	}
 
 	public static boolean allResurrection(Object entityPlayer, Object itemStack) {
+		Modchu_Debug.mDebug("allResurrection");
 		if (!modc_ResurrectionFeather.allResurrection) return false;
+		Modchu_Debug.mDebug("allResurrection 1");
 		long systemTime = Modchu_AS.getLong(Modchu_AS.minecraftSystemTime);
 		if (tempAllResurrectionTime + modc_ResurrectionFeather.allResurrectionWaitTime < systemTime) {
 			tempItemstack = itemStack;

@@ -38,7 +38,10 @@ public class ResurrectionFeatherEntityCreature {
 			//if (debug) Modchu_Debug.Debug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent call.");
 			onDeathUpdate(entityLiving, true);
 		} else {
-			//if (debug) Modchu_Debug.Debug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent "+(Modchu_AS.getFloat(Modchu_AS.entityLivingBaseGetHealth, entityLiving)));
+			//if (debug) {
+				//Modchu_Debug.Debug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent entityLiving="+entityLiving);
+				//Modchu_Debug.Debug("ResurrectionFeatherEntityCreature livingEventLivingUpdateEvent "+(Modchu_AS.getFloat(Modchu_AS.entityLivingBaseGetHealth, entityLiving)));
+			//}
 		}
 		long systemTime = Modchu_AS.getLong(Modchu_AS.minecraftSystemTime);
 		if (debug) Modchu_Debug.mdDebug("allResurrectionTime = "+(tempAllResurrectionTime + modc_ResurrectionFeather.allResurrectionWaitTime - systemTime), 1);
@@ -203,7 +206,7 @@ public class ResurrectionFeatherEntityCreature {
 						}
 						if (flag) dataList.add(entityLivingBase);
 						//if (debug) Modchu_Debug.Debug("listCheck isInstance 5 flag="+flag);
-						return flag;
+						break;
 					}
 				} catch (ClassNotFoundException e1) {
 				}
